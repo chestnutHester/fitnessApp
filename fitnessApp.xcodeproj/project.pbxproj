@@ -432,6 +432,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hcorne.fitnessApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -444,6 +445,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hcorne.fitnessApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -516,6 +518,7 @@
 				24614D8E1E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24614D8F1E1EFD45003AE1FC /* Build configuration list for PBXNativeTarget "fitnessAppTests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +527,7 @@
 				24614D911E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24614D921E1EFD45003AE1FC /* Build configuration list for PBXNativeTarget "fitnessAppUITests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +536,7 @@
 				24614D941E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
