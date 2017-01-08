@@ -4,7 +4,7 @@
 //
 //  Created by Hester Corne on 05/01/2017.
 //  Copyright © 2017 Hester Corne. All rights reserved.
-//
+//EDITS
 
 #import "ViewController.h"
 #import <HealthKit/HealthKit.h>
