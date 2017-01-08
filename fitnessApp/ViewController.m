@@ -33,6 +33,7 @@
     _healthStore = [self enableHealthStore];
     _workoutList = [self fetchWorkouts];
 }
+
 -(HKHealthStore*)enableHealthStore{
     HKHealthStore *hs = [[HKHealthStore alloc] init];
     if(![HKHealthStore isHealthDataAvailable]){
@@ -91,94 +92,64 @@
     //Get the today's day of the week as an integer
     NSCalendar* cal = [NSCalendar currentCalendar];
     NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
-    NSInteger dayInt = [comp weekday]; // 1 = Sunday, 2 = Monday, etc.
+    int today = (int)[comp weekday]; // 1 = Sunday, 2 = Monday, etc.
     
-    //Set an array to store which weekdays had workouts
-    NSMutableArray *workoutDays = [NSMutableArray array];
+    //Set an array with days of the week
+    NSMutableArray<WeekDay *> *daysOfTheWeek = [NSMutableArray array];
+    for(int i = 1; i<8; i++){
+        WeekDay *newDay = [[WeekDay alloc] initWithDayOfTheWeek:i];
+        [daysOfTheWeek addObject:newDay];
+    }
     
-    //Get the workouts' day of the week as an integer
+    //Add the workouts to the daysOfTheWeek array
     for(HKQuantitySample *samples in workouts){
+        //Get the workout's day of the week as an integer
         HKWorkout *workout = (HKWorkout *)samples;
         NSDate *workoutDate = workout.endDate;
         comp = [cal components:NSCalendarUnitWeekday fromDate:workoutDate];
-        NSInteger workoutDayInt = [comp weekday];
-        [workoutDays addObject:[NSNumber numberWithInteger:workoutDayInt]];
+        int workoutDay = (int)[comp weekday];
+        
+        //Add the workout to daysOfTheWeek
+        for(int i=0; i<daysOfTheWeek.count; i++){
+            WeekDay *currentDay = daysOfTheWeek[i];
+           if(currentDay.dayOfTheWeek == workoutDay){
+               [currentDay setWorkout:YES];
+           }
+        }
     }
     
-    NSLog(@"Array: %@", workoutDays);
+    //Set an array for the labels and images of the week view bar
+    WeekViewItem *item1 = [[WeekViewItem alloc] initWithLabel:_day1Label image:_day1Image];
+    WeekViewItem *item2 = [[WeekViewItem alloc] initWithLabel:_day2Label image:_day2Image];
+    WeekViewItem *item3 = [[WeekViewItem alloc] initWithLabel:_day3Label image:_day3Image];
+    WeekViewItem *item4 = [[WeekViewItem alloc] initWithLabel:_day4Label image:_day4Image];
+    WeekViewItem *item5 = [[WeekViewItem alloc] initWithLabel:_day5Label image:_day5Image];
+    WeekViewItem *item6 = [[WeekViewItem alloc] initWithLabel:_day6Label image:_day6Image];
+    WeekViewItem *item7 = [[WeekViewItem alloc] initWithLabel:_day7Label image:_day7Image];
+    NSArray<WeekViewItem *> *weekViewList = @[item1,item2,item3,item4,item5,item6,item7];
     
-    //List week day with workout status
-    
-    
-    switch(dayInt){
-        case 1:
-            //Set days of the week
-            _day1Label.text = @"Mon";
-            _day2Label.text = @"Tue";
-            _day3Label.text = @"Wed";
-            _day4Label.text = @"Thu";
-            _day5Label.text = @"Fri";
-            _day6Label.text = @"Sat";
-            _day7Label.text = @"Sun";
-            
-            
-            break;
-        case 2:
-            _day1Label.text = @"Tue";
-            _day2Label.text = @"Wed";
-            _day3Label.text = @"Thu";
-            _day4Label.text = @"Fri";
-            _day5Label.text = @"Sat";
-            _day6Label.text = @"Sun";
-            _day7Label.text = @"Mon";
-            break;
-        case 3:
-            _day1Label.text = @"Wed";
-            _day2Label.text = @"Thu";
-            _day3Label.text = @"Fri";
-            _day4Label.text = @"Sat";
-            _day5Label.text = @"Sun";
-            _day6Label.text = @"Mon";
-            _day7Label.text = @"Tue";
-            break;
-        case 4:
-            _day1Label.text = @"Thu";
-            _day2Label.text = @"Fri";
-            _day3Label.text = @"Sat";
-            _day4Label.text = @"Sun";
-            _day5Label.text = @"Mon";
-            _day6Label.text = @"Tue";
-            _day7Label.text = @"Wed";
-            break;
-        case 5:
-            _day1Label.text = @"Fri";
-            _day2Label.text = @"Sat";
-            _day3Label.text = @"Sun";
-            _day4Label.text = @"Mon";
-            _day5Label.text = @"Tue";
-            _day6Label.text = @"Wed";
-            _day7Label.text = @"Thu";
-            break;
-        case 6:
-            _day1Label.text = @"Sat";
-            _day2Label.text = @"Sun";
-            _day3Label.text = @"Mon";
-            _day4Label.text = @"Tue";
-            _day5Label.text = @"Wed";
-            _day6Label.text = @"Thu";
-            _day7Label.text = @"Fri";
-            break;
-        case 7:
-            _day1Label.text = @"Sun";
-            _day2Label.text = @"Mon";
-            _day3Label.text = @"Tue";
-            _day4Label.text = @"Wed";
-            _day5Label.text = @"Thu";
-            _day6Label.text = @"Fri";
-            _day7Label.text = @"Sat";
-            break;
+    //Set the items in weekViewList based on daysOfTheWeek          //today = day of the week starting 1
+    for(int i=0; i<7; i++){
+        UILabel *label = weekViewList[6-i].label;
+        label.text = [self stringFromWeekday:today-1];
+        
+        if(daysOfTheWeek[today-1].workout){
+            UIImageView *image = weekViewList[6-i].image;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [image setImage:[UIImage imageNamed:@"completeWeekViewImage.png"]];
+            });
+        }
+        today--;
+        if(today ==0){
+            today = 7;
+        }
     }
 }
 
+- (NSString *)stringFromWeekday:(NSInteger)weekday {
+    NSDateFormatter * dateFormatter = [NSDateFormatter new];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    return dateFormatter.shortWeekdaySymbols[weekday];
+}
 
 @end

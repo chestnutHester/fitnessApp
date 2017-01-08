@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WeekDay.h"
+#import "WeekViewItem.h"
 
 @interface ViewController : UIViewController
 //Week Day View Bar
