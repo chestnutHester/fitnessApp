@@ -21,10 +21,6 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     [self loadOverviewData];
-    
-    
-    //need to make sure healthkit data has been retrieved first
-    [self setWeekView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -32,14 +28,91 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)setWeekView{
-    //Get the day of the week
+
+-(void)loadOverviewData{
+    _healthStore = [self enableHealthStore];
+    _workoutList = [self fetchWorkouts];
+}
+-(HKHealthStore*)enableHealthStore{
+    HKHealthStore *hs = [[HKHealthStore alloc] init];
+    if(![HKHealthStore isHealthDataAvailable]){
+        NSLog(@"Health data not available");
+        return nil;
+    }
+    NSArray *readTypes = @[[HKObjectType workoutType]];
+    NSArray *writeTypes = @[[HKObjectType workoutType]];
+    [hs requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes] readTypes:[NSSet setWithArray:readTypes] completion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"Erro authorizing: %@", [error description]);
+        }
+    }];
+    return hs;
+}
+
+-(NSArray*)fetchWorkouts{
+    __block NSArray *listOfWorkouts = nil;
+    
+    //Only return workouts from the last 7 days
+    NSDate *today = [NSDate date];
+    NSDate *day1 = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay
+                                                                    value:-6
+                                                                   toDate:today
+                                                                  options:0];
+    
+    NSPredicate *thisWeekPredicate = [HKQuery predicateForSamplesWithStartDate:day1 endDate:today options:HKQueryOptionNone];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
+                                                                 predicate:thisWeekPredicate
+                                                                     limit:HKObjectQueryNoLimit
+                                                           sortDescriptors:@[sortDescriptor]
+                                                            resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                  {
+                                      
+                                      if(!error && results){
+                                          NSLog(@"Retrieved the following workouts");
+                                          listOfWorkouts = results;
+                                          for(HKQuantitySample *samples in results)
+                                          {
+                                              // your code here
+                                              HKWorkout *workout = (HKWorkout *)samples;
+                                              NSLog(@"%lu",(unsigned long)workout.endDate);
+                                          }
+                                          [self setWeekView:listOfWorkouts];
+                                      }else{
+                                          NSLog(@"Error retrieving workouts %@",error);
+                                      }
+                                  }];
+    [_healthStore executeQuery:sampleQuery];
+    return listOfWorkouts;
+}
+
+-(void)setWeekView:(NSArray *)workouts{
+    //Get the today's day of the week as an integer
     NSCalendar* cal = [NSCalendar currentCalendar];
     NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
     NSInteger dayInt = [comp weekday]; // 1 = Sunday, 2 = Monday, etc.
     
+    //Set an array to store which weekdays had workouts
+    NSMutableArray *workoutDays = [NSMutableArray array];
+    
+    //Get the workouts' day of the week as an integer
+    for(HKQuantitySample *samples in workouts){
+        HKWorkout *workout = (HKWorkout *)samples;
+        NSDate *workoutDate = workout.endDate;
+        comp = [cal components:NSCalendarUnitWeekday fromDate:workoutDate];
+        NSInteger workoutDayInt = [comp weekday];
+        [workoutDays addObject:[NSNumber numberWithInteger:workoutDayInt]];
+    }
+    
+    NSLog(@"Array: %@", workoutDays);
+    
+    //List week day with workout status
+    
+    
     switch(dayInt){
         case 1:
+            //Set days of the week
             _day1Label.text = @"Mon";
             _day2Label.text = @"Tue";
             _day3Label.text = @"Wed";
@@ -47,6 +120,8 @@
             _day5Label.text = @"Fri";
             _day6Label.text = @"Sat";
             _day7Label.text = @"Sun";
+            
+            
             break;
         case 2:
             _day1Label.text = @"Tue";
@@ -105,55 +180,5 @@
     }
 }
 
--(void)loadOverviewData{
-    _healthStore = [self enableHealthStore];
-    _workoutList = [self fetchWorkouts];
-    
-}
--(HKHealthStore*)enableHealthStore{
-    HKHealthStore *hs = [[HKHealthStore alloc] init];
-    if(![HKHealthStore isHealthDataAvailable]){
-        NSLog(@"Health data not available");
-        return nil;
-    }
-    NSArray *readTypes = @[[HKObjectType workoutType]];
-    NSArray *writeTypes = @[[HKObjectType workoutType]];
-    [hs requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes] readTypes:[NSSet setWithArray:readTypes] completion:^(BOOL success, NSError *error) {
-        if (!success) {
-            NSLog(@"Erro authorizing: %@", [error description]);
-        }
-    }];
-    return hs;
-}
-
--(NSArray*)fetchWorkouts{
-    __block NSArray *listOfWorkouts = nil;
-    
-    //read workouts of 30mins or more
-    NSPredicate *predicate = [HKQuery predicateForWorkoutsWithOperatorType:NSGreaterThanPredicateOperatorType duration:1800];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
-    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
-                                                                 predicate:predicate
-                                                                     limit:HKObjectQueryNoLimit
-                                                           sortDescriptors:@[sortDescriptor]
-                                                            resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
-                                  {
-                                      
-                                      if(!error && results){
-                                          NSLog(@"Retrieved the following workouts");
-                                          listOfWorkouts = results;
-                                          for(HKQuantitySample *samples in results)
-                                          {
-                                              // your code here
-                                              HKWorkout *workout = (HKWorkout *)samples;
-                                              NSLog(@"%lu",(unsigned long)workout.workoutActivityType);
-                                          }
-                                      }else{
-                                          NSLog(@"Error retrieving workouts %@",error);
-                                      }
-                                  }];
-    [_healthStore executeQuery:sampleQuery];
-    return listOfWorkouts;
-}
 
 @end
