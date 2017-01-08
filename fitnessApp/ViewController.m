@@ -11,6 +11,7 @@
 
 @interface ViewController ()
 @property (strong,nonatomic) HKHealthStore *healthStore;
+@property (strong,nonatomic) NSArray *workoutList;
 @end
 
 @implementation ViewController
@@ -18,8 +19,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    [self loadOverviewData];
+    
+    
+    //need to make sure healthkit data has been retrieved first
     [self setWeekView];
-    _healthStore = [self enableHealthStore];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -100,6 +105,11 @@
     }
 }
 
+-(void)loadOverviewData{
+    _healthStore = [self enableHealthStore];
+    _workoutList = [self fetchWorkouts];
+    
+}
 -(HKHealthStore*)enableHealthStore{
     HKHealthStore *hs = [[HKHealthStore alloc] init];
     if(![HKHealthStore isHealthDataAvailable]){
@@ -114,6 +124,36 @@
         }
     }];
     return hs;
+}
+
+-(NSArray*)fetchWorkouts{
+    __block NSArray *listOfWorkouts = nil;
+    
+    //read workouts of 30mins or more
+    NSPredicate *predicate = [HKQuery predicateForWorkoutsWithOperatorType:NSGreaterThanPredicateOperatorType duration:1800];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+    HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKWorkoutType workoutType]
+                                                                 predicate:predicate
+                                                                     limit:HKObjectQueryNoLimit
+                                                           sortDescriptors:@[sortDescriptor]
+                                                            resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                  {
+                                      
+                                      if(!error && results){
+                                          NSLog(@"Retrieved the following workouts");
+                                          listOfWorkouts = results;
+                                          for(HKQuantitySample *samples in results)
+                                          {
+                                              // your code here
+                                              HKWorkout *workout = (HKWorkout *)samples;
+                                              NSLog(@"%lu",(unsigned long)workout.workoutActivityType);
+                                          }
+                                      }else{
+                                          NSLog(@"Error retrieving workouts %@",error);
+                                      }
+                                  }];
+    [_healthStore executeQuery:sampleQuery];
+    return listOfWorkouts;
 }
 
 @end
