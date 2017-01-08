@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		245D69CF1E21A78E00F13163 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 245D69CE1E21A78E00F13163 /* HealthKit.framework */; };
+		245D69D51E229E7700F13163 /* WeekDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 245D69D41E229E7700F13163 /* WeekDay.m */; };
+		245D69D81E22AD5300F13163 /* WeekViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 245D69D71E22AD5300F13163 /* WeekViewItem.m */; };
 		24614D641E1EFD44003AE1FC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D631E1EFD44003AE1FC /* main.m */; };
 		24614D671E1EFD44003AE1FC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D661E1EFD44003AE1FC /* AppDelegate.m */; };
 		24614D6A1E1EFD44003AE1FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D691E1EFD44003AE1FC /* ViewController.m */; };
@@ -35,6 +38,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		245D69CC1E21A78E00F13163 /* fitnessApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = fitnessApp.entitlements; sourceTree = "<group>"; };
+		245D69CE1E21A78E00F13163 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		245D69D31E229E7700F13163 /* WeekDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeekDay.h; sourceTree = "<group>"; };
+		245D69D41E229E7700F13163 /* WeekDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeekDay.m; sourceTree = "<group>"; };
+		245D69D61E22AD5300F13163 /* WeekViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeekViewItem.h; sourceTree = "<group>"; };
+		245D69D71E22AD5300F13163 /* WeekViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeekViewItem.m; sourceTree = "<group>"; };
 		24614D5F1E1EFD44003AE1FC /* fitnessApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fitnessApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24614D631E1EFD44003AE1FC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		24614D651E1EFD44003AE1FC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -58,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				245D69CF1E21A78E00F13163 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +88,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		245D69CD1E21A78E00F13163 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				245D69CE1E21A78E00F13163 /* HealthKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		24614D561E1EFD44003AE1FC = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +103,7 @@
 				24614D7B1E1EFD45003AE1FC /* fitnessAppTests */,
 				24614D861E1EFD45003AE1FC /* fitnessAppUITests */,
 				24614D601E1EFD44003AE1FC /* Products */,
+				245D69CD1E21A78E00F13163 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +120,7 @@
 		24614D611E1EFD44003AE1FC /* fitnessApp */ = {
 			isa = PBXGroup;
 			children = (
+				245D69CC1E21A78E00F13163 /* fitnessApp.entitlements */,
 				24614D651E1EFD44003AE1FC /* AppDelegate.h */,
 				24614D661E1EFD44003AE1FC /* AppDelegate.m */,
 				24614D681E1EFD44003AE1FC /* ViewController.h */,
@@ -110,6 +130,10 @@
 				24614D701E1EFD44003AE1FC /* LaunchScreen.storyboard */,
 				24614D731E1EFD44003AE1FC /* Info.plist */,
 				24614D621E1EFD44003AE1FC /* Supporting Files */,
+				245D69D31E229E7700F13163 /* WeekDay.h */,
+				245D69D41E229E7700F13163 /* WeekDay.m */,
+				245D69D61E22AD5300F13163 /* WeekViewItem.h */,
+				245D69D71E22AD5300F13163 /* WeekViewItem.m */,
 			);
 			path = fitnessApp;
 			sourceTree = "<group>";
@@ -209,6 +233,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = HYMX7ZX3M2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.HealthKit = {
+								enabled = 1;
+							};
+						};
 					};
 					24614D771E1EFD45003AE1FC = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -277,7 +306,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				24614D6A1E1EFD44003AE1FC /* ViewController.m in Sources */,
+				245D69D81E22AD5300F13163 /* WeekViewItem.m in Sources */,
 				24614D671E1EFD44003AE1FC /* AppDelegate.m in Sources */,
+				245D69D51E229E7700F13163 /* WeekDay.m in Sources */,
 				24614D641E1EFD44003AE1FC /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,11 +458,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = fitnessApp/fitnessApp.entitlements;
 				DEVELOPMENT_TEAM = HYMX7ZX3M2;
 				INFOPLIST_FILE = fitnessApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hcorne.fitnessApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -439,11 +472,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = fitnessApp/fitnessApp.entitlements;
 				DEVELOPMENT_TEAM = HYMX7ZX3M2;
 				INFOPLIST_FILE = fitnessApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hcorne.fitnessApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -516,6 +551,7 @@
 				24614D8E1E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24614D8F1E1EFD45003AE1FC /* Build configuration list for PBXNativeTarget "fitnessAppTests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +560,7 @@
 				24614D911E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24614D921E1EFD45003AE1FC /* Build configuration list for PBXNativeTarget "fitnessAppUITests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +569,7 @@
 				24614D941E1EFD45003AE1FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
