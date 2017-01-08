@@ -7,9 +7,10 @@
 //
 
 #import "ViewController.h"
+#import <HealthKit/HealthKit.h>
 
 @interface ViewController ()
-
+@property (strong,nonatomic) HKHealthStore *healthStore;
 @end
 
 @implementation ViewController
@@ -17,10 +18,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
     [self setWeekView];
+    _healthStore = [self enableHealthStore];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -98,6 +98,22 @@
             _day7Label.text = @"Sat";
             break;
     }
+}
+
+-(HKHealthStore*)enableHealthStore{
+    HKHealthStore *hs = [[HKHealthStore alloc] init];
+    if(![HKHealthStore isHealthDataAvailable]){
+        NSLog(@"Health data not available");
+        return nil;
+    }
+    NSArray *readTypes = @[[HKObjectType workoutType]];
+    NSArray *writeTypes = @[[HKObjectType workoutType]];
+    [hs requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes] readTypes:[NSSet setWithArray:readTypes] completion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"Erro authorizing: %@", [error description]);
+        }
+    }];
+    return hs;
 }
 
 @end
