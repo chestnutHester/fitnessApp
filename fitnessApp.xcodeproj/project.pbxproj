@@ -10,6 +10,7 @@
 		245D69CF1E21A78E00F13163 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 245D69CE1E21A78E00F13163 /* HealthKit.framework */; };
 		245D69D51E229E7700F13163 /* WeekDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 245D69D41E229E7700F13163 /* WeekDay.m */; };
 		245D69D81E22AD5300F13163 /* WeekViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 245D69D71E22AD5300F13163 /* WeekViewItem.m */; };
+		245D69DB1E22DF9B00F13163 /* MonthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 245D69DA1E22DF9B00F13163 /* MonthViewController.m */; };
 		24614D641E1EFD44003AE1FC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D631E1EFD44003AE1FC /* main.m */; };
 		24614D671E1EFD44003AE1FC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D661E1EFD44003AE1FC /* AppDelegate.m */; };
 		24614D6A1E1EFD44003AE1FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D691E1EFD44003AE1FC /* ViewController.m */; };
@@ -44,6 +45,8 @@
 		245D69D41E229E7700F13163 /* WeekDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeekDay.m; sourceTree = "<group>"; };
 		245D69D61E22AD5300F13163 /* WeekViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeekViewItem.h; sourceTree = "<group>"; };
 		245D69D71E22AD5300F13163 /* WeekViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeekViewItem.m; sourceTree = "<group>"; };
+		245D69D91E22DF9B00F13163 /* MonthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonthViewController.h; sourceTree = "<group>"; };
+		245D69DA1E22DF9B00F13163 /* MonthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonthViewController.m; sourceTree = "<group>"; };
 		24614D5F1E1EFD44003AE1FC /* fitnessApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fitnessApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24614D631E1EFD44003AE1FC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		24614D651E1EFD44003AE1FC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -134,6 +137,8 @@
 				245D69D41E229E7700F13163 /* WeekDay.m */,
 				245D69D61E22AD5300F13163 /* WeekViewItem.h */,
 				245D69D71E22AD5300F13163 /* WeekViewItem.m */,
+				245D69D91E22DF9B00F13163 /* MonthViewController.h */,
+				245D69DA1E22DF9B00F13163 /* MonthViewController.m */,
 			);
 			path = fitnessApp;
 			sourceTree = "<group>";
@@ -306,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24614D6A1E1EFD44003AE1FC /* ViewController.m in Sources */,
+				245D69DB1E22DF9B00F13163 /* MonthViewController.m in Sources */,
 				245D69D81E22AD5300F13163 /* WeekViewItem.m in Sources */,
 				24614D671E1EFD44003AE1FC /* AppDelegate.m in Sources */,
 				245D69D51E229E7700F13163 /* WeekDay.m in Sources */,

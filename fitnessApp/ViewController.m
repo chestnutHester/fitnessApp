@@ -56,7 +56,7 @@
     //Only return workouts from the last 7 days
     NSDate *today = [NSDate date];
     NSDate *day1 = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay
-                                                                    value:-6
+                                                                    value:-7
                                                                    toDate:today
                                                                   options:0];
     
@@ -131,8 +131,9 @@
     //Set the items in weekViewList based on daysOfTheWeek          //today = day of the week starting 1
     for(int i=0; i<7; i++){
         UILabel *label = weekViewList[6-i].label;
-        label.text = [self stringFromWeekday:today-1];
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            label.text = [self stringFromWeekday:today-1];
+        });
         if(daysOfTheWeek[today-1].workout){
             UIImageView *image = weekViewList[6-i].image;
             dispatch_async(dispatch_get_main_queue(), ^{
