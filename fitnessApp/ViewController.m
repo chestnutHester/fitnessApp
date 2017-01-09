@@ -44,7 +44,7 @@
     NSArray *writeTypes = @[[HKObjectType workoutType]];
     [hs requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes] readTypes:[NSSet setWithArray:readTypes] completion:^(BOOL success, NSError *error) {
         if (!success) {
-            NSLog(@"Erro authorizing: %@", [error description]);
+            NSLog(@"Error authorizing: %@", [error description]);
         }
     }];
     return hs;
@@ -71,14 +71,7 @@
                                   {
                                       
                                       if(!error && results){
-                                          NSLog(@"Retrieved the following workouts");
                                           listOfWorkouts = results;
-                                          for(HKQuantitySample *samples in results)
-                                          {
-                                              // your code here
-                                              HKWorkout *workout = (HKWorkout *)samples;
-                                              NSLog(@"%lu",(unsigned long)workout.endDate);
-                                          }
                                           [self setWeekView:listOfWorkouts];
                                       }else{
                                           NSLog(@"Error retrieving workouts %@",error);
@@ -170,7 +163,16 @@
     return dateFormatter.shortWeekdaySymbols[weekday];
 }
 
-- (void)setWorkoutView:(NSArray*)workouts{
-    
+- (void)setWorkoutView:(NSArray<HKWorkout*>*)workouts{
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    for(int i=0; i<workouts.count; i++){
+        HKWorkout *workout = workouts[i];
+        NSLog(@"Workout: %lu", (unsigned long)workout.workoutActivityType);
+        NSDate *startTime = workout.startDate;
+        NSDateComponents *timeComponent = [cal components:(NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:startTime];
+        NSInteger startHour = [timeComponent hour];
+        NSInteger startMinute = [timeComponent minute];
+        NSLog(@"Start Time: %ld:%ld", (long)startHour, (long)startMinute);
+    }
 }
 @end
