@@ -101,12 +101,28 @@
         [daysOfTheWeek addObject:newDay];
     }
     
+    //Set an array for today's workouts
+    NSMutableArray<HKWorkout*> *todaysWorkouts = [NSMutableArray array];
+    
     //Add the workouts to the daysOfTheWeek array
     for(HKQuantitySample *samples in workouts){
         //Get the workout's day of the week as an integer
         HKWorkout *workout = (HKWorkout *)samples;
-        NSDate *workoutDate = workout.endDate;
-        comp = [cal components:NSCalendarUnitWeekday fromDate:workoutDate];
+        NSDate *workoutDateAndTime = workout.endDate;
+        
+        //If the workout was today add it to todaysWorkouts
+        unsigned unitFlags = (NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear);
+        NSDateComponents *workoutDateComponents = [cal components:unitFlags fromDate:workoutDateAndTime];
+        NSDateComponents *todayComponents = [cal components:unitFlags fromDate:[NSDate date]];
+        NSDate *workoutDateOnly = [cal dateFromComponents:workoutDateComponents];
+        NSDate *todayDateOnly = [cal dateFromComponents:todayComponents];
+        
+        NSComparisonResult result = [workoutDateOnly compare:todayDateOnly];
+        if (result == NSOrderedSame) {
+            [todaysWorkouts addObject:workout];
+        }
+        
+        comp = [cal components:NSCalendarUnitWeekday fromDate:workoutDateAndTime];
         int workoutDay = (int)[comp weekday];
         
         //Add the workout to daysOfTheWeek
@@ -133,18 +149,19 @@
         UILabel *label = weekViewList[6-i].label;
         dispatch_async(dispatch_get_main_queue(), ^{
             label.text = [self stringFromWeekday:today-1];
-        });
-        if(daysOfTheWeek[today-1].workout){
-            UIImageView *image = weekViewList[6-i].image;
-            dispatch_async(dispatch_get_main_queue(), ^{
+            if(daysOfTheWeek[today-1].workout){
+                UIImageView *image = weekViewList[6-i].image;
                 [image setImage:[UIImage imageNamed:@"completeWeekViewImage.png"]];
-            });
-        }
+            }
+        });
         today--;
         if(today ==0){
             today = 7;
         }
     }
+    
+    //Show today's workout(s)
+    [self setWorkoutView:todaysWorkouts];
 }
 
 - (NSString *)stringFromWeekday:(NSInteger)weekday {
@@ -153,4 +170,7 @@
     return dateFormatter.shortWeekdaySymbols[weekday];
 }
 
+- (void)setWorkoutView:(NSArray*)workouts{
+    
+}
 @end
