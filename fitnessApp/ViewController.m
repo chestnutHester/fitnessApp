@@ -141,7 +141,7 @@
     for(int i=0; i<7; i++){
         UILabel *label = weekViewList[6-i].label;
         dispatch_async(dispatch_get_main_queue(), ^{
-            label.text = [self stringFromWeekday:today-1];
+            label.text = [self stringFromWeekday:today-1 format:@"short"];
             if(daysOfTheWeek[today-1].workout){
                 UIImageView *image = weekViewList[6-i].image;
                 [image setImage:[UIImage imageNamed:@"completeWeekViewImage.png"]];
@@ -157,22 +157,147 @@
     [self setWorkoutView:todaysWorkouts];
 }
 
-- (NSString *)stringFromWeekday:(NSInteger)weekday {
+- (NSString *)stringFromWeekday:(NSInteger)weekday format:(NSString*)format {
     NSDateFormatter * dateFormatter = [NSDateFormatter new];
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    return dateFormatter.shortWeekdaySymbols[weekday];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
+    if([format isEqualToString:@"short"]){
+        return dateFormatter.shortWeekdaySymbols[weekday];
+    }
+    else{
+        return dateFormatter.weekdaySymbols[weekday];
+    }
 }
 
 - (void)setWorkoutView:(NSArray<HKWorkout*>*)workouts{
+    //Get todays day of the week
     NSCalendar *cal = [NSCalendar currentCalendar];
-    for(int i=0; i<workouts.count; i++){
-        HKWorkout *workout = workouts[i];
-        NSLog(@"Workout: %lu", (unsigned long)workout.workoutActivityType);
-        NSDate *startTime = workout.startDate;
-        NSDateComponents *timeComponent = [cal components:(NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:startTime];
-        NSInteger startHour = [timeComponent hour];
-        NSInteger startMinute = [timeComponent minute];
-        NSLog(@"Start Time: %ld:%ld", (long)startHour, (long)startMinute);
+    NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
+    int weekdayInt = (int)[comp weekday]; // 1 = Sunday, 2 = Monday, etc.
+    NSString *weekdayString = [[self stringFromWeekday:weekdayInt-1 format:@"long"]stringByAppendingString:@" "];
+    
+    //Get todays date of the month
+    comp = [cal components:NSCalendarUnitDay fromDate:[NSDate date]];
+    int dayInt = (int)[comp day];
+    NSString *dayString = [NSString stringWithFormat: @"%ld", (long)dayInt];
+    
+    switch(dayInt){
+        case 1:
+        case 21:
+        case 31:
+            dayString = [dayString stringByAppendingString:@"st "];
+            break;
+        case 2:
+        case 22:
+            dayString = [dayString stringByAppendingString:@"nd "];
+            break;
+        case 3:
+        case 23:
+            dayString = [dayString stringByAppendingString:@"rd "];
+            break;
+        default:
+            dayString = [dayString stringByAppendingString:@"th "];
+            break;
+    }
+
+    //Get todays month
+    comp = [cal components:NSCalendarUnitMonth fromDate:[NSDate date]];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_UK"];
+    int monthInt = (int)[comp month];
+    NSString *monthString = dateFormatter.shortMonthSymbols[monthInt-1];
+    
+    //Set today label
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _todayLabel.text=[@"Today: " stringByAppendingString:[weekdayString stringByAppendingString:[dayString stringByAppendingString:monthString]]];
+    });
+    
+    //if no workout, display nothing
+    if(workouts == nil){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _workoutTypeLabel.text=@"No workouts";
+        });
+    }
+    else{
+        //Display every workout for the day <----- Need to do a scroll view
+        for(int i=0; i<workouts.count; i++){
+            HKWorkout *workout = workouts[i];
+            NSLog(@"Workout: %lu", (unsigned long)workout.workoutActivityType);
+            NSDate *startTime = workout.startDate;
+            //NSDate *endTime = workout.endDate;
+            
+            //Get start time in hours and minutes
+            NSDateComponents *timeComponent = [cal components:(NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:startTime];
+            NSInteger startHour = [timeComponent hour];
+            NSInteger startMinute = [timeComponent minute];
+            NSString *startMinuteString = [NSString stringWithFormat: @"%ld", (long)startMinute];
+            if(startMinute <10){
+                startMinuteString = [@"0" stringByAppendingString:startMinuteString];
+            }
+            NSString *startTimeString = [NSString stringWithFormat: @"%ld", (long)startHour];
+            startTimeString = [startTimeString stringByAppendingString:@":"];
+            startTimeString = [startTimeString stringByAppendingString:startMinuteString];
+            NSLog(@"%@", startTimeString);
+            
+            //Get total distance
+            double totalDistance = [workout.totalDistance doubleValueForUnit:[HKUnit meterUnit]];
+            NSLog(@"Total Distance: %ld",(long)totalDistance);
+            NSString *distanceString = @"Total Distance: ";
+            
+            //Get total energy burned
+            double totalEnergy = [workout.totalEnergyBurned doubleValueForUnit:[HKUnit calorieUnit]];
+            NSLog(@"Total Calories: %ld",(long)totalEnergy);
+            NSString *energyString = [NSString stringWithFormat:@"%ld", (long)totalEnergy];
+            
+            //Get workout duration
+            NSTimeInterval duration = workout.duration;
+            NSLog(@"Duration: %f", duration);
+            NSInteger durationMinutes = (int)round(duration/60);
+            NSInteger durationSeconds = (int)round(duration-durationMinutes*60);
+            NSString *durationString = [NSString stringWithFormat:@"%ld", (long)durationSeconds];
+            if(durationSeconds < 10){
+                durationString = [@"0" stringByAppendingString:durationString];
+            }
+            durationString = [[[NSString stringWithFormat:@"%ld", (long)durationMinutes] stringByAppendingString:@":"]stringByAppendingString:durationString];
+            
+            //Get workout type as a string
+            HKWorkoutActivityType workoutType = workout.workoutActivityType;
+            NSString *workoutString = @"";
+            
+            switch(workoutType){
+                case 52:
+                    workoutString = @"Walk: ";
+                    //Display distance in km
+                    totalDistance = round(totalDistance/1000);
+                    distanceString = [distanceString stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)totalDistance]];
+                    distanceString = [distanceString stringByAppendingString:@"km"];
+                    break;
+                case 46:
+                    workoutString = @"Swim: ";
+                    //Display distacne in lengths
+                    totalDistance = round(totalDistance/25);
+                    distanceString = [distanceString stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)totalDistance]];
+                    distanceString = [distanceString stringByAppendingString:@" Lengths"];
+                    break;
+                case 37:
+                    workoutString = @"Run: ";
+                    //Display distance in km
+                    totalDistance = round(totalDistance/1000);
+                    distanceString = [distanceString stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)totalDistance]];
+                    distanceString = [distanceString stringByAppendingString:@"km"];
+                default:
+                    break;
+            }
+            
+            NSLog(@"Total Distance: %ld",(long)totalDistance);
+            
+            //Set the workout data
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _workoutTypeLabel.text=[workoutString stringByAppendingString:startTimeString];
+                _parameter1Label.text = distanceString;
+                _parameter2Label.text = [@"Total Engergy: " stringByAppendingString:energyString];
+                _parameter3Label.text = [@"Duration: " stringByAppendingString:durationString];
+            });
+        }
     }
 }
 @end
