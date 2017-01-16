@@ -35,6 +35,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *parameter1Label;
 @property (weak, nonatomic) IBOutlet UILabel *parameter2Label;
 @property (weak, nonatomic) IBOutlet UILabel *parameter3Label;
+@property (weak, nonatomic) IBOutlet UILabel *parameter4Label;
+@property (weak, nonatomic) IBOutlet UILabel *parameter5Label;
 
 @end
 

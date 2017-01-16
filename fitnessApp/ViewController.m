@@ -40,7 +40,7 @@
         NSLog(@"Health data not available");
         return nil;
     }
-    NSArray *readTypes = @[[HKObjectType workoutType]];
+    NSArray *readTypes = @[[HKObjectType workoutType],[HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate]];
     NSArray *writeTypes = @[[HKObjectType workoutType]];
     [hs requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes] readTypes:[NSSet setWithArray:readTypes] completion:^(BOOL success, NSError *error) {
         if (!success) {
@@ -223,7 +223,7 @@
             HKWorkout *workout = workouts[i];
             NSLog(@"Workout: %lu", (unsigned long)workout.workoutActivityType);
             NSDate *startTime = workout.startDate;
-            //NSDate *endTime = workout.endDate;
+            NSDate *endTime = workout.endDate;
             
             //Get start time in hours and minutes
             NSDateComponents *timeComponent = [cal components:(NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:startTime];
@@ -297,7 +297,33 @@
                 _parameter2Label.text = [@"Total Engergy: " stringByAppendingString:energyString];
                 _parameter3Label.text = [@"Duration: " stringByAppendingString:durationString];
             });
+            
+            //Get the heart rate data
+            NSPredicate *heartRatePredicate = [HKQuery predicateForSamplesWithStartDate:startTime endDate:endTime options:HKQueryOptionNone];
+            
+            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+            HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKSampleType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate]
+                                                                         predicate:heartRatePredicate
+                                                                             limit:HKObjectQueryNoLimit
+                                                                   sortDescriptors:@[sortDescriptor]
+                                                                    resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                          {
+                                              
+                                              if(!error && results){
+                                                  NSLog(@"Success!");
+                                                  for(HKQuantitySample *sample in results){
+                                                      NSLog(@"HR: %f", [sample.quantity doubleValueForUnit:[[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]]]);
+                                                  }
+                                                  [self displayHeartRate:results];
+                                              }else{
+                                                  NSLog(@"Error retrieving heart rate %@",error);
+                                              }
+                                          }];
+            [_healthStore executeQuery:sampleQuery];
         }
     }
+}
+
+-(void)displayHeartRate:(NSArray *)heartRateSamples{
 }
 @end

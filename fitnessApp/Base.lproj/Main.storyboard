@@ -142,6 +142,20 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Workout Parameter 5: Value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ov-tT-vXG">
+                                        <rect key="frame" x="16" y="145" width="316" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Workout Parameter 4: Value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MHl-iW-3Df">
+                                        <rect key="frame" x="16" y="116" width="316" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -174,6 +188,8 @@
                         <outlet property="parameter1Label" destination="Giq-cR-vCH" id="soY-13-SY8"/>
                         <outlet property="parameter2Label" destination="E45-JO-gpy" id="5lc-9u-hIh"/>
                         <outlet property="parameter3Label" destination="z86-wf-BM4" id="jv6-Nt-04r"/>
+                        <outlet property="parameter4Label" destination="MHl-iW-3Df" id="NnB-Sa-oqi"/>
+                        <outlet property="parameter5Label" destination="4ov-tT-vXG" id="VZa-hw-NMo"/>
                         <outlet property="todayLabel" destination="nZ8-fm-aOe" id="Avw-yl-BsQ"/>
                         <outlet property="weekViewBackground" destination="SR5-AE-Adf" id="CKK-V4-Wx7"/>
                         <outlet property="workoutTypeLabel" destination="M6g-fB-aZy" id="sYg-3c-Aa6"/>
