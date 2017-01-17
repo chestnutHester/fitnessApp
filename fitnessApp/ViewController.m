@@ -86,11 +86,11 @@
     NSCalendar* cal = [NSCalendar currentCalendar];
     NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
     int today = (int)[comp weekday]; // 1 = Sunday, 2 = Monday, etc.
-    
+   
     //Set an array with days of the week
     NSMutableArray<WeekDay *> *daysOfTheWeek = [NSMutableArray array];
     for(int i = 1; i<8; i++){
-        WeekDay *newDay = [[WeekDay alloc] initWithDayOfTheWeek:i];
+        WeekDay *newDay = [[WeekDay alloc] initWithDayOfTheWeek:i]; ///<-- should it be i-1?
         [daysOfTheWeek addObject:newDay];
     }
     
@@ -244,7 +244,7 @@
             NSString *distanceString = @"Total Distance: ";
             
             //Get total energy burned
-            double totalEnergy = [workout.totalEnergyBurned doubleValueForUnit:[HKUnit calorieUnit]];
+            double totalEnergy = [workout.totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]];
             NSLog(@"Total Calories: %ld",(long)totalEnergy);
             NSString *energyString = [NSString stringWithFormat:@"%ld", (long)totalEnergy];
             
@@ -263,12 +263,16 @@
             HKWorkoutActivityType workoutType = workout.workoutActivityType;
             NSString *workoutString = @"";
             
+            NSNumberFormatter *fmt = [[NSNumberFormatter alloc] init];
+            [fmt setPositiveFormat:@"0.##"];
+            
+           
             switch(workoutType){
                 case 52:
                     workoutString = @"Walk: ";
                     //Display distance in km
-                    totalDistance = round(totalDistance/1000);
-                    distanceString = [distanceString stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)totalDistance]];
+                    totalDistance = round(totalDistance)/1000;
+                    distanceString = [distanceString stringByAppendingString:[fmt stringFromNumber:[NSNumber numberWithFloat:totalDistance]]];
                     distanceString = [distanceString stringByAppendingString:@"km"];
                     break;
                 case 46:
@@ -281,20 +285,20 @@
                 case 37:
                     workoutString = @"Run: ";
                     //Display distance in km
-                    totalDistance = round(totalDistance/1000);
-                    distanceString = [distanceString stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)totalDistance]];
+                    totalDistance = round(totalDistance)/1000;
+                    distanceString = [distanceString stringByAppendingString:[fmt stringFromNumber:[NSNumber numberWithFloat:totalDistance]]];
                     distanceString = [distanceString stringByAppendingString:@"km"];
                 default:
                     break;
             }
             
-            NSLog(@"Total Distance: %ld",(long)totalDistance);
+            NSLog(@"Total Distance: %f",totalDistance);
             
             //Set the workout data
             dispatch_async(dispatch_get_main_queue(), ^{
                 _workoutTypeLabel.text=[workoutString stringByAppendingString:startTimeString];
                 _parameter1Label.text = distanceString;
-                _parameter2Label.text = [@"Total Engergy: " stringByAppendingString:energyString];
+                _parameter2Label.text = [[@"Total Engergy: " stringByAppendingString:energyString] stringByAppendingString:@"kcal"];
                 _parameter3Label.text = [@"Duration: " stringByAppendingString:durationString];
             });
             
@@ -311,9 +315,7 @@
                                               
                                               if(!error && results){
                                                   NSLog(@"Success!");
-                                                  for(HKQuantitySample *sample in results){
-                                                      NSLog(@"HR: %f", [sample.quantity doubleValueForUnit:[[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]]]);
-                                                  }
+                                                  
                                                   [self displayHeartRate:results];
                                               }else{
                                                   NSLog(@"Error retrieving heart rate %@",error);
@@ -325,5 +327,20 @@
 }
 
 -(void)displayHeartRate:(NSArray *)heartRateSamples{
+    double avgHR = 0;
+    double peakHR = 0;
+    for(HKQuantitySample *sample in heartRateSamples){
+        double hr = [sample.quantity doubleValueForUnit:[[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]]];
+        if(hr>peakHR){
+            peakHR = hr;
+        }
+        avgHR += hr;
+    }
+    avgHR = avgHR/heartRateSamples.count;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _parameter4Label.text = [@"Average Heart Rate: " stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)avgHR]];
+        _parameter5Label.text = [@"Peak Heart Rate: " stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)peakHR]];
+    });
 }
 @end
