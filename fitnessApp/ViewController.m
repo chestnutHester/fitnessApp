@@ -341,6 +341,11 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         _parameter4Label.text = [@"Average Heart Rate: " stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)avgHR]];
         _parameter5Label.text = [@"Peak Heart Rate: " stringByAppendingString:[NSString stringWithFormat:@"%ld", (long)peakHR]];
+        
+        //Create an instance of HeartRateView (with axes)
+        HeartRateView *hrView = _heartRateView;
+        //Plot the heeart rate
+        [hrView plotHeartRate:heartRateSamples];
     });
 }
 @end

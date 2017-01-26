@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WeekDay.h"
 #import "WeekViewItem.h"
+#import "HeartRateView.h"
 
 @interface ViewController : UIViewController
 //Week Day View Bar Labels
@@ -37,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *parameter3Label;
 @property (weak, nonatomic) IBOutlet UILabel *parameter4Label;
 @property (weak, nonatomic) IBOutlet UILabel *parameter5Label;
+@property (weak, nonatomic) IBOutlet HeartRateView *heartRateView;
 
 @end
 

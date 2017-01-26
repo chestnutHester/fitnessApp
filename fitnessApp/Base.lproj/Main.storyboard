@@ -156,6 +156,11 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QZI-eN-PmW" customClass="HeartRateView">
+                                        <rect key="frame" x="16" y="174" width="299" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -185,6 +190,7 @@
                         <outlet property="day6Label" destination="njk-6h-8Om" id="EGk-8l-ImA"/>
                         <outlet property="day7Image" destination="DJt-4f-mwq" id="WAu-DM-Zvw"/>
                         <outlet property="day7Label" destination="xrG-HJ-6LT" id="QuG-bB-nqd"/>
+                        <outlet property="heartRateView" destination="QZI-eN-PmW" id="HWJ-Yw-2xl"/>
                         <outlet property="parameter1Label" destination="Giq-cR-vCH" id="soY-13-SY8"/>
                         <outlet property="parameter2Label" destination="E45-JO-gpy" id="5lc-9u-hIh"/>
                         <outlet property="parameter3Label" destination="z86-wf-BM4" id="jv6-Nt-04r"/>
