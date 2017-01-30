@@ -20,6 +20,8 @@
 		24614D721E1EFD44003AE1FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24614D701E1EFD44003AE1FC /* LaunchScreen.storyboard */; };
 		24614D7D1E1EFD45003AE1FC /* fitnessAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D7C1E1EFD45003AE1FC /* fitnessAppTests.m */; };
 		24614D881E1EFD45003AE1FC /* fitnessAppUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24614D871E1EFD45003AE1FC /* fitnessAppUITests.m */; };
+		24F5B5F21E3FE0A90065BD24 /* WorkoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F5B5F11E3FE0A90065BD24 /* WorkoutView.m */; };
+		24F5B5F51E3FE7450065BD24 /* Workout.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F5B5F41E3FE7450065BD24 /* Workout.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,10 @@
 		24614D831E1EFD45003AE1FC /* fitnessAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fitnessAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		24614D871E1EFD45003AE1FC /* fitnessAppUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = fitnessAppUITests.m; sourceTree = "<group>"; };
 		24614D891E1EFD45003AE1FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		24F5B5F01E3FE0A80065BD24 /* WorkoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkoutView.h; sourceTree = "<group>"; };
+		24F5B5F11E3FE0A90065BD24 /* WorkoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WorkoutView.m; sourceTree = "<group>"; };
+		24F5B5F31E3FE7450065BD24 /* Workout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Workout.h; sourceTree = "<group>"; };
+		24F5B5F41E3FE7450065BD24 /* Workout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Workout.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +150,10 @@
 				245D69DA1E22DF9B00F13163 /* MonthViewController.m */,
 				245D69DC1E37E7FA00F13163 /* HeartRateView.h */,
 				245D69DD1E37E7FA00F13163 /* HeartRateView.m */,
+				24F5B5F01E3FE0A80065BD24 /* WorkoutView.h */,
+				24F5B5F11E3FE0A90065BD24 /* WorkoutView.m */,
+				24F5B5F31E3FE7450065BD24 /* Workout.h */,
+				24F5B5F41E3FE7450065BD24 /* Workout.m */,
 			);
 			path = fitnessApp;
 			sourceTree = "<group>";
@@ -317,10 +327,12 @@
 			files = (
 				24614D6A1E1EFD44003AE1FC /* ViewController.m in Sources */,
 				245D69DB1E22DF9B00F13163 /* MonthViewController.m in Sources */,
+				24F5B5F51E3FE7450065BD24 /* Workout.m in Sources */,
 				245D69DE1E37E7FA00F13163 /* HeartRateView.m in Sources */,
 				245D69D81E22AD5300F13163 /* WeekViewItem.m in Sources */,
 				24614D671E1EFD44003AE1FC /* AppDelegate.m in Sources */,
 				245D69D51E229E7700F13163 /* WeekDay.m in Sources */,
+				24F5B5F21E3FE0A90065BD24 /* WorkoutView.m in Sources */,
 				24614D641E1EFD44003AE1FC /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

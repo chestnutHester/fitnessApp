@@ -12,6 +12,8 @@
 @interface ViewController ()
 @property (strong,nonatomic) HKHealthStore *healthStore;
 @property (strong,nonatomic) NSArray *workoutList;
+@property (strong,nonatomic) NSMutableArray<Workout*> *workoutData;
+@property int workoutDataIndex;
 @end
 
 @implementation ViewController
@@ -19,8 +21,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+    _workoutData = [[NSMutableArray alloc] init];
     [self loadOverviewData];
+   // [_workoutView setHidden:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,6 +75,7 @@
                                       
                                       if(!error && results){
                                           listOfWorkouts = results;
+                                          [self retrieveWorkoutData:listOfWorkouts];
                                           [self setWeekView:listOfWorkouts];
                                       }else{
                                           NSLog(@"Error retrieving workouts %@",error);
@@ -79,6 +83,45 @@
                                   }];
     [_healthStore executeQuery:sampleQuery];
     return listOfWorkouts;
+}
+
+-(void)retrieveWorkoutData:(NSArray *)workouts{
+    for(HKWorkout *workout in workouts){
+        //Get basic parameters
+        NSDate *startDate = workout.startDate;
+        NSDate *endDate = workout.endDate;
+        NSTimeInterval duration = workout.duration;
+        
+        HKWorkoutActivityType workoutType = workout.workoutActivityType;
+        double totalDistance = [workout.totalDistance doubleValueForUnit:[HKUnit meterUnit]];
+        double totalEnergy = [workout.totalEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]];
+        
+        //Get heart rate
+        __block NSArray *heartRateData = [[NSArray alloc] init];
+        NSPredicate *heartRatePredicate = [HKQuery predicateForSamplesWithStartDate:startDate endDate:endDate options:HKQueryOptionNone];
+        
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]initWithKey:HKSampleSortIdentifierStartDate ascending:false];
+        HKSampleQuery *sampleQuery = [[HKSampleQuery alloc] initWithSampleType:[HKSampleType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate]
+                                                                     predicate:heartRatePredicate
+                                                                         limit:HKObjectQueryNoLimit
+                                                               sortDescriptors:@[sortDescriptor]
+                                                                resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error)
+                                      {
+                                          
+                                          if(!error && results){
+                                              NSLog(@"Retreive Workout Data: Success!");
+                                              heartRateData = results;
+                                          }else{
+                                              NSLog(@"Error retrieving heart rate %@",error);
+                                          }
+                                      }];
+        [_healthStore executeQuery:sampleQuery];
+        
+        //Create a new instance of Workout (custom class)
+        Workout *newWorkout = [[Workout alloc] initWithRecord:startDate :endDate :duration :workoutType :totalDistance :totalEnergy :heartRateData];
+        [_workoutData addObject:newWorkout];
+    }
+    _workoutDataIndex = (int)_workoutData.count - 1;
 }
 
 -(void)setWeekView:(NSArray *)workouts{
@@ -154,7 +197,7 @@
     }
     
     //Show today's workout(s)
-    [self setWorkoutView:todaysWorkouts];
+    [self displayWorkouts:todaysWorkouts];
 }
 
 - (NSString *)stringFromWeekday:(NSInteger)weekday format:(NSString*)format {
@@ -168,7 +211,7 @@
     }
 }
 
-- (void)setWorkoutView:(NSArray<HKWorkout*>*)workouts{
+- (void)displayWorkouts:(NSArray<HKWorkout*>*)workouts{
     //Get todays day of the week
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents* comp = [cal components:NSCalendarUnitWeekday fromDate:[NSDate date]];
